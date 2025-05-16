@@ -1,29 +1,29 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import HomeScreen from '../screens/HomeScreen';
+import DeliveryScreen from '../screens/DeliveryScreen';
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+// Define the param list type
+type Order = {
+  id: string;
+  customer: string;
+  address: string;
+  food: string;
+};
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+type RootStackParamList = {
+  Home: undefined;
+  Delivery: { order: Order };
+};
 
+// Pass the type to the stack
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+export default function App() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Delivery" component={DeliveryScreen} />
+    </Stack.Navigator>
   );
 }
